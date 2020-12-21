@@ -1,3 +1,73 @@
+.home{
+  text-align: end;
+  padding-right: 100px;
+  font-size: x-large;
+}
+
+.site-statistic-demo-card {
+  background: #ececec;
+  padding: 30px;
+}
+
 .correct-answer {
   background: darkolivegreen;
+}
+
+.logo {
+  height: 40px;
+  width: 150px;
+  background: dark;
+  margin: 16px;
+}
+
+.site-layout-sub-header-background {
+  background: #fff;
+}
+
+.site-layout-background {
+  background: #fff;
+}
+
+.certain-category-search-dropdown .ant-select-dropdown-menu-item-group-title {
+  color: #666;
+  font-weight: bold;
+}
+
+.certain-category-search-dropdown .ant-select-dropdown-menu-item-group {
+  border-bottom: 1px solid #f6f6f6;
+}
+
+.certain-category-search-dropdown .ant-select-dropdown-menu-item {
+  padding-left: 16px;
+}
+
+.certain-category-search-dropdown .ant-select-dropdown-menu-item.show-all {
+  text-align: center;
+  cursor: default;
+}
+
+.certain-category-search-dropdown .ant-select-dropdown-menu {
+  max-height: 300px;
+}
+
+.site-statistic-demo-card{
+  width: 30%;
+}
+
+[data-theme='compact'] .ant-advanced-search-form,
+.ant-advanced-search-form {
+  padding: 24px;
+  background: #fbfbfb;
+  border: 1px solid #d9d9d9;
+  border-radius: 2px;
+}
+
+[data-theme='compact'] .ant-advanced-search-form .ant-form-item,
+.ant-advanced-search-form .ant-form-item {
+  display: flex;
+}
+
+[data-theme='compact'] .ant-advanced-search-form .ant-form-item-control-wrapper,
+.ant-advanced-search-form .ant-form-item-control-wrapper {
+  flex: 1;
 }

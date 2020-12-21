@@ -1,9 +1,9 @@
 import React from "react";
 import { Row, Col } from "antd";
 import { Form, Input, Button, Checkbox } from "antd";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { UserOutlined, LockOutlined, MailOutlined } from "@ant-design/icons";
 import { Image } from "antd";
-import "./login.scss";
+import "./signup.scss";
 import homeImage from "../../Image/home.png";
 
 const onFinish = (values: any) => {
@@ -16,9 +16,8 @@ const layout = {
 
 function redirectLogin(key: any) {
   console.log(key);
-  window.location.href = "/";
 }
-function Login() {
+function Signup() {
   return (
     <div>
       <div className="login"></div>
@@ -64,38 +63,72 @@ function Login() {
               />
             </Form.Item>
             <Form.Item
+              name="email"
+              rules={[
+                {
+                  type: "email",
+                  message: "The input is not valid E-mail!",
+                },
+                {
+                  required: true,
+                  message: "Please input your E-mail!",
+                },
+              ]}
+            >
+              <Input
+                prefix={<MailOutlined className="site-form-item-icon" />}
+                placeholder="Email ID"
+              />
+            </Form.Item>
+            <Form.Item
               name="password"
               rules={[
                 { required: true, message: "Please input your Password!" },
               ]}
             >
-              <Input
+              <Input.Password 
                 prefix={<LockOutlined className="site-form-item-icon" />}
                 type="password"
                 placeholder="Password"
               />
             </Form.Item>
-            <Form.Item>
-              <Form.Item name="remember" valuePropName="checked" noStyle>
-                <Checkbox>Remember me</Checkbox>
-              </Form.Item>
-
-              <a className="login-form-forgot" href="">
-                Forgot password
-              </a>
+            <Form.Item
+              name="confirm"
+              dependencies={["password"]}
+              hasFeedback
+              rules={[
+                {
+                  required: true,
+                  message: "Please confirm your password!",
+                },
+                ({ getFieldValue }) => ({
+                  validator(rule, value) {
+                    if (!value || getFieldValue("password") === value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(
+                      "The two passwords that you entered do not match!"
+                    );
+                  },
+                }),
+              ]}
+            >
+              <Input.Password
+                prefix={<LockOutlined className="site-form-item-icon" />}
+                type="password"
+                placeholder="Confirm Password"
+              />
             </Form.Item>
-
             <Form.Item>
               <Button
                 type="primary"
                 htmlType="submit"
                 className="login-form-button"
-                formNoValidate={false}
-                onSubmit={redirectLogin}
+                onClick={redirectLogin}
               >
-                Log in
+                Continue
               </Button>
-              Or <a href="/signup">register now!</a>
+              <a href="/login">Already have an account?</a>
             </Form.Item>
           </Form>
         </Col>
@@ -104,4 +137,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Signup;
