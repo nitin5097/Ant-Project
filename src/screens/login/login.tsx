@@ -91,7 +91,7 @@ function Login() {
                 htmlType="submit"
                 className="login-form-button"
                 formNoValidate={false}
-                onSubmit={redirectLogin}
+                onClick={redirectLogin}
               >
                 Log in
               </Button>

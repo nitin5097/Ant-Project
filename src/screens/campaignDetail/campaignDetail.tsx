@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, Input } from "antd";
+import { Image, Input, Space } from "antd";
 import { Col, Row } from "antd";
 import "./campaignDetail.scss";
 import {Slider } from "antd";
@@ -13,6 +13,7 @@ import {
   GlobalOutlined,
   FacebookOutlined,
   BarChartOutlined,
+  LogoutOutlined,
 } from "@ant-design/icons";
 import logoImage from "../../Image/logo_white.png";
 
@@ -98,6 +99,15 @@ function homeReturn(key: any) {
   console.log(key);
   window.location.href = "/";
 }
+function campaignReturn(key: any) {
+  console.log(key);
+  window.location.href = "/campaign";
+}
+
+function returnReports(key: any) {
+  console.log(key);
+  window.location.href = "/reports";
+}
 
 interface HomeProps {
   message: string;
@@ -119,48 +129,60 @@ function CampaignDetail(props: HomeProps) {
         }}
       >
         <div className="logo">
-          <Image src={logoImage} onClick={signOut} />
+          <Image src={logoImage} />
         </div>
         <Menu theme="dark" mode="inline" defaultSelectedKeys={["4"]}>
-          <Menu.Item
+        <Menu.Item
             key="1"
-            icon={<PlusCircleOutlined style={{ fontSize: "20px" }} />}
+            icon={<BarChartOutlined style={{ fontSize: "20px" }} />}
             onClick={homeReturn}
           >
-            New Campaign
+            Campaign Status
           </Menu.Item>
           <Menu.Item
             key="2"
+            icon={<PlusCircleOutlined style={{ fontSize: "20px" }} />}
+            onClick={campaignReturn}
+          >
+          Campaign Setup
+          </Menu.Item>
+          <Menu.Item
+            key="3"
             icon={<BarChartOutlined style={{ fontSize: "20px" }} />}
-            onClick={homeReturn}
+            onClick={returnReports}
           >
             Reports
           </Menu.Item>
         </Menu>
       </Sider>
       <Layout>
-        <Header
+      <Header
           className="site-layout-sub-header-background"
           style={{ background: "White", padding: 0 }}
         >
           <div>
             <div className="ant-row">
               <div className="ant-col ant-col-4"></div>
-              <div className="ant-col ant-col-3"></div>
-              <div className="ant-col ant-col-3"></div>
-              <div className="ant-col ant-col-3">
+              
+              <div className="ant-col ant-col-4">
                 <div style={{ fontSize: "20px", textAlign: "right" }}>
-                  <a onClick={homeReturn}>
-                    {<PlusCircleOutlined />}New Campaign
+                  <a onClick={campaignReturn}>
+                    {<PlusCircleOutlined />}Campaign Setup
                   </a>
                 </div>
               </div>
               <div className="ant-col ant-col-1"></div>
-              <div className="ant-col ant-col-2">
-                <div style={{ fontSize: "20px", textAlign: "left" }}>
-                  <a onClick={homeReturn}>{<BarChartOutlined />}Reports</a>
+              <div className="ant-col ant-col-4">
+              <div style={{ fontSize: "20px", textAlign: "left" }}>
+                  <a onClick={homeReturn}>{<BarChartOutlined />}Campaign Status</a>
                 </div>
               </div>
+              <div className="ant-col ant-col-2">
+                <div style={{ fontSize: "20px", textAlign: "left" }}>
+                  <a onClick={returnReports}>{<BarChartOutlined />}Reports</a>
+                </div>
+              </div>
+              <div className="ant-col ant-col-2"></div>
               <div
                 className="ant-col ant-col-6"
                 style={{ fontSize: "20px", textAlign: "end" }}
@@ -168,7 +190,9 @@ function CampaignDetail(props: HomeProps) {
                 {props.isLoggedIn && (
                   <div className="home">
                     <div>
-                      {props.message}, {props.name}
+                      {" "}
+                      {props.message}, {props.name} <Space/> 
+                      <a href="/login">{<LogoutOutlined disabled style={{ fontSize: "20px" }} />}</a>
                     </div>
                   </div>
                 )}
@@ -590,7 +614,7 @@ function CampaignDetail(props: HomeProps) {
                 </Row>
               </div>
               <div className="site-card-wrapper">
-                <TimelineChart height={200} data={chartData} titleMap={{ y1: 'Bread', y2: 'Milk'}} />
+                <TimelineChart height={200} data={chartData} titleMap={{ y1: 'Setup', y2: 'Sold'}} />
               </div>
             </div>
 

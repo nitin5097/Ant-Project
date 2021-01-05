@@ -1,5 +1,5 @@
 import React from "react";
-import "./home.scss";
+import "./campaign status.scss";
 // import {Route, Switch} from "react-router-dom";
 // import Campaign from "../../screens/campaign/campaign";
 import {
@@ -14,10 +14,12 @@ import {
   Col,
   Button,
   Table,
+  Space,
 } from "antd";
 import {
   RocketFilled,  
   StopFilled,
+  LogoutOutlined, 
   StopOutlined ,
   PlusCircleOutlined,
   LinkedinOutlined,
@@ -124,13 +126,18 @@ function homeReturn(key: any) {
   window.location.href = "/";
 }
 
+function returnReports(key: any) {
+  console.log(key);
+  window.location.href = "/reports";
+}
+
 interface HomeProps {
   message: string;
   name: string;
   isLoggedIn: boolean;
 }
 
-function Home(props: HomeProps) {
+function CampaignStatus(props: HomeProps) {
   return (
     <Layout>
       <Sider
@@ -144,42 +151,41 @@ function Home(props: HomeProps) {
         }}
       >
         <div className="logo">
-          <Image src={logoImage} onClick={signOut} />
+          <Image src={logoImage} />
         </div>
         <Menu theme="dark" mode="inline" defaultSelectedKeys={["4"]}>
-          <Menu.Item
+        <Menu.Item
             key="1"
+            icon={<BarChartOutlined style={{ fontSize: "20px" }} />}
+            onClick={homeReturn}
+          >
+            Campaign Status
+          </Menu.Item>
+          <Menu.Item
+            key="2"
             icon={<PlusCircleOutlined style={{ fontSize: "20px" }} />}
             onClick={campaignReturn}
           >
           Campaign Setup
           </Menu.Item>
           <Menu.Item
-            key="2"
+            key="3"
             icon={<BarChartOutlined style={{ fontSize: "20px" }} />}
-            onClick={homeReturn}
+            onClick={returnReports}
           >
             Reports
-          </Menu.Item>
-          <Menu.Item
-            key="2"
-            icon={<BarChartOutlined style={{ fontSize: "20px" }} />}
-            onClick={homeReturn}
-          >
-            Campaign Status
           </Menu.Item>
         </Menu>
       </Sider>
       <Layout>
-        <Header
+      <Header
           className="site-layout-sub-header-background"
           style={{ background: "White", padding: 0 }}
         >
           <div>
             <div className="ant-row">
               <div className="ant-col ant-col-4"></div>
-              <div className="ant-col ant-col-3"></div>
-              <div className="ant-col ant-col-3"></div>
+              
               <div className="ant-col ant-col-4">
                 <div style={{ fontSize: "20px", textAlign: "right" }}>
                   <a onClick={campaignReturn}>
@@ -188,11 +194,17 @@ function Home(props: HomeProps) {
                 </div>
               </div>
               <div className="ant-col ant-col-1"></div>
-              <div className="ant-col ant-col-2">
-                <div style={{ fontSize: "20px", textAlign: "left" }}>
-                  <a onClick={homeReturn}>{<BarChartOutlined />}Reports</a>
+              <div className="ant-col ant-col-4">
+              <div style={{ fontSize: "20px", textAlign: "left" }}>
+                  <a onClick={homeReturn}>{<BarChartOutlined />}Campaign Status</a>
                 </div>
               </div>
+              <div className="ant-col ant-col-2">
+                <div style={{ fontSize: "20px", textAlign: "left" }}>
+                  <a onClick={returnReports}>{<BarChartOutlined />}Reports</a>
+                </div>
+              </div>
+              <div className="ant-col ant-col-2"></div>
               <div
                 className="ant-col ant-col-6"
                 style={{ fontSize: "20px", textAlign: "end" }}
@@ -201,7 +213,8 @@ function Home(props: HomeProps) {
                   <div className="home">
                     <div>
                       {" "}
-                      {props.message}, {props.name}
+                      {props.message}, {props.name} <Space/> 
+                      <a href="/login">{<LogoutOutlined disabled style={{ fontSize: "20px" }} />}</a>
                     </div>
                   </div>
                 )}
@@ -394,4 +407,4 @@ function Home(props: HomeProps) {
   );
 }
 
-export default Home;
+export default CampaignStatus;

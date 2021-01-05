@@ -16,6 +16,7 @@ import {
   GlobalOutlined,
   FacebookOutlined,
   BarChartOutlined,
+  LogoutOutlined,
 } from "@ant-design/icons";
 import logoImage from "../../Image/logo_white.png";
 
@@ -29,6 +30,16 @@ function onChange(date: any, dateString: any) {
 
 function onCheckChange(checkedValues: any) {
   console.log("checked = ", checkedValues);
+}
+
+function campaignReturn(key: any) {
+  console.log(key);
+  window.location.href = "/campaign";
+}
+
+function returnReports(key: any) {
+  console.log(key);
+  window.location.href = "/reports";
 }
 
 function handleChange(value: any) {
@@ -48,9 +59,18 @@ function signOut(key: any) {
   window.location.href = "/login";
 }
 
+function enableSection2(key: any){
+  console.log(key);
+}
+
 function homeReturn(key: any) {
   console.log(key);
   window.location.href = "/";
+}
+
+function redirectResult(key: any) {
+  console.log(key);
+  window.location.href = "/result";
 }
 
 interface HomeProps {
@@ -137,48 +157,60 @@ function Campaign(props: HomeProps) {
         }}
       >
         <div className="logo">
-          <Image src={logoImage} onClick={signOut} />
+          <Image src={logoImage} />
         </div>
         <Menu theme="dark" mode="inline" defaultSelectedKeys={["4"]}>
-          <Menu.Item
+        <Menu.Item
             key="1"
-            icon={<PlusCircleOutlined style={{ fontSize: "20px" }} />}
+            icon={<BarChartOutlined style={{ fontSize: "20px" }} />}
             onClick={homeReturn}
           >
-            New Campaign
+            Campaign Status
           </Menu.Item>
           <Menu.Item
             key="2"
+            icon={<PlusCircleOutlined style={{ fontSize: "20px" }} />}
+            onClick={campaignReturn}
+          >
+          Campaign Setup
+          </Menu.Item>
+          <Menu.Item
+            key="3"
             icon={<BarChartOutlined style={{ fontSize: "20px" }} />}
-            onClick={homeReturn}
+            onClick={returnReports}
           >
             Reports
           </Menu.Item>
         </Menu>
       </Sider>
       <Layout>
-        <Header
+      <Header
           className="site-layout-sub-header-background"
           style={{ background: "White", padding: 0 }}
         >
           <div>
             <div className="ant-row">
               <div className="ant-col ant-col-4"></div>
-              <div className="ant-col ant-col-3"></div>
-              <div className="ant-col ant-col-3"></div>
-              <div className="ant-col ant-col-3">
+              
+              <div className="ant-col ant-col-4">
                 <div style={{ fontSize: "20px", textAlign: "right" }}>
-                  <a onClick={homeReturn}>
-                    {<PlusCircleOutlined />}New Campaign
+                  <a onClick={campaignReturn}>
+                    {<PlusCircleOutlined />}Campaign Setup
                   </a>
                 </div>
               </div>
               <div className="ant-col ant-col-1"></div>
-              <div className="ant-col ant-col-2">
-                <div style={{ fontSize: "20px", textAlign: "left" }}>
-                  <a onClick={homeReturn}>{<BarChartOutlined />}Reports</a>
+              <div className="ant-col ant-col-4">
+              <div style={{ fontSize: "20px", textAlign: "left" }}>
+                  <a onClick={homeReturn}>{<BarChartOutlined />}Campaign Status</a>
                 </div>
               </div>
+              <div className="ant-col ant-col-2">
+                <div style={{ fontSize: "20px", textAlign: "left" }}>
+                  <a onClick={returnReports}>{<BarChartOutlined />}Reports</a>
+                </div>
+              </div>
+              <div className="ant-col ant-col-2"></div>
               <div
                 className="ant-col ant-col-6"
                 style={{ fontSize: "20px", textAlign: "end" }}
@@ -187,7 +219,8 @@ function Campaign(props: HomeProps) {
                   <div className="home">
                     <div>
                       {" "}
-                      {props.message}, {props.name}
+                      {props.message}, {props.name} <Space/> 
+                      <a href="/login">{<LogoutOutlined disabled style={{ fontSize: "20px" }} />}</a>
                     </div>
                   </div>
                 )}
@@ -306,15 +339,17 @@ function Campaign(props: HomeProps) {
                           />
                         </div>
                       </Col>
+                      <Col span={2}></Col>
                       <Col span={2}>
-                      </Col>
-                      <Col span={4}>
-                        <Button type="primary">Next</Button>
+                        <Button type="primary"
+                        style={{ verticalAlign: "End", width: 80 }}
+                        onSubmit={enableSection2}>
+                          Next
+                          </Button>
                       </Col>
                     </Row>
                   </div>
                 </Panel>
-
                 <Panel header="Choose Campaign Typology" key="2">
                   <div>
                     {campaignTypologyData.metadata.typology.map(
@@ -322,7 +357,9 @@ function Campaign(props: HomeProps) {
                         return (
                           <div>
                             <br></br>
-                            <div>
+                            <Row gutter={24}>
+                              <Col>
+                              <div>
                               <label>{categories.category}</label>
                             </div>
                             <Radio.Group
@@ -339,11 +376,39 @@ function Campaign(props: HomeProps) {
                                 );
                               })}
                             </Radio.Group>
+                              </Col>
+                              {categories.category === "Seasonability" && (
+                                <Col span={19}>
+                              <div className="home">
+                              <Space>
+                                <Button
+                                  type="primary"
+                                  style={{ verticalAlign: "End", width: 80 }}
+                                >
+                                  Previous
+                                </Button>
+                                <Button
+                                  type="primary"
+                                  style={{ verticalAlign: "End", width: 80 }}
+                                >
+                                  Next
+                                </Button>
+                                </Space>
+                              </div>
+                              </Col>
+                            )}
+                            </Row>
                           </div>
                         );
                       }
                     )}
                   </div>
+                  {/* <div>
+                    <iframe width="800" height="800"
+                    src="https://app.powerbi.com/reportEmbed?reportId=94f8e10f-00db-4990-b207-7d97e7248d38&autoAuth=true&ctid=2eddc39c-2996-4c2a-ab97-f767c39ea155&config=eyJjbHVzdGVyVXJsIjoiaHR0cHM6Ly93YWJpLXVzLWVhc3QyLXJlZGlyZWN0LmFuYWx5c2lzLndpbmRvd3MubmV0LyJ9"></iframe>
+
+
+                  </div> */}
                 </Panel>
                 <Panel header="Approve Budget" key="3">
                   <div>
@@ -562,6 +627,7 @@ function Campaign(props: HomeProps) {
                         </div>
                       </Col>
                       <Col span={6}>
+                      <Space>
                         <Button
                           type="primary"
                           style={{ verticalAlign: "End", width: 80 }}
@@ -572,9 +638,11 @@ function Campaign(props: HomeProps) {
                         <Button
                           type="primary"
                           style={{ verticalAlign: "End", width: 80 }}
+                          onClick={redirectResult}
                         >
                           Approve
                         </Button>
+                        </Space>
                       </Col>
                     </Row>
                   </div>

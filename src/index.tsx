@@ -4,10 +4,7 @@ import './index.scss';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {
-  BrowserRouter,
-  Switch,
-  Route,
-  Link
+  BrowserRouter
 } from "react-router-dom";
 
 ReactDOM.render(
