@@ -5,7 +5,6 @@ import HeaderComponent from "../components/headerComponent";
 import FooterComponent from "../components/footerComponent";
 import { Layout, Card, Row, Col } from "antd";
 import Tree from 'react-d3-tree';
-import { VerticalAlignBottomOutlined } from "@ant-design/icons";
 const { Content } = Layout;
 const salesData: { x: string; y: number }[] = [];
 for (let i = 0; i < 12; i += 1) {
@@ -105,13 +104,13 @@ function Analyze(props: HomeProps) {
                   style={{
                     padding: "5px",
                     textAlign: "center",
-                    fontSize: "20px",
+                    fontSize: "20px"
                   }}
                 >
                   KPI Tree
                 </div>
                 <br></br>
-              <div id="treeWrapper" style={{  width: '100%', height: '80%',     fontKerning: "normal" }}>
+              <div id="treeWrapper" style={{  width: '100%', height: '80%', fontKerning: "normal"}}>
       <Tree data={salesChart} />
     </div>
               </Col>
