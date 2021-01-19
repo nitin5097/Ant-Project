@@ -2,12 +2,22 @@ import React from "react";
 import { Row, Col } from "antd";
 import { Form, Input, Button, Checkbox } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
-import { Image } from "antd";
+import { Image, message } from "antd";
 import "./login.scss";
 import homeImage from "../../Image/home.png";
 
+const error = () => {
+  message.error('Invalid credentials');
+};
+
 const onFinish = (values: any) => {
   console.log("Received values of form: ", values);
+  if((values.username==='Admin')&&(values.password==='Admin')){
+    window.location.href = "/";
+  }
+  else{
+    message.error('Invalid credentials');
+  }
 };
 
 const layout = {
@@ -91,7 +101,6 @@ function Login() {
                 htmlType="submit"
                 className="login-form-button"
                 formNoValidate={false}
-                onClick={redirectLogin}
               >
                 Log in
               </Button>

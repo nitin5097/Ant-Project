@@ -2,44 +2,138 @@ import React from "react";
 import { Image } from "antd";
 import { Col, Row } from "antd";
 import "./campaign.scss";
-import { Select } from "antd";
+import { Select, Cascader } from "antd";
 import { Collapse } from "antd";
 import { DatePicker, Space } from "antd";
 import { InputNumber } from "antd";
 import { Button } from "antd";
 import { Radio } from "antd";
-import { Checkbox } from "antd";
-import { Layout, Menu } from "antd";
-import {
-  PlusCircleOutlined,
-  LinkedinOutlined,
-  GlobalOutlined,
-  FacebookOutlined,
-  BarChartOutlined,
-  LogoutOutlined,
-} from "@ant-design/icons";
-import logoImage from "../../Image/logo_white.png";
+import { Checkbox, Tooltip } from "antd";
+import { Layout } from "antd";
+import { Tabs } from "antd";
+import barCodeImage from "../../Image/barcode_plain.jpg";
+import { Modal } from 'antd';
+import MenuComponent from "../components/menuComponent";
+import HeaderComponent from "../components/headerComponent";
+import FooterComponent from "../components/footerComponent";
 
+import {
+  ExclamationCircleOutlined,
+} from "@ant-design/icons";
+import { Form, Input} from 'antd';
+import { Upload } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
+
+const layout = {
+  labelCol: { span: 8 },
+  wrapperCol: { span: 16 },
+};
+
+const { RangePicker } = DatePicker;
+const { TabPane } = Tabs;
 const { Option } = Select;
-const { Header, Footer, Sider, Content } = Layout;
+const { Content } = Layout;
 const { Panel } = Collapse;
+
+function formatDate(date: string | number | Date) {
+  var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+
+  if (month.length < 2) 
+      month = '0' + month;
+  if (day.length < 2) 
+      day = '0' + day;
+
+      return `${year}年 ${month}月 ${day}日`;
+}
+
+const areaData = [
+  {
+    value: "ABC",
+    label: "ABC",
+    children: [
+      {
+        value: "Store 1",
+        label: "Store 1",
+      },
+      {
+        value: "Store 2",
+        label: "Store 2",
+      },
+    ],
+  },
+  {
+    value: "XYZ",
+    label: "XYZ",
+    children: [
+      {
+        value: "Store 3",
+        label: "Store 3",
+      },
+      {
+        value: "Store 4",
+        label: "Store 4",
+      },
+    ],
+  },
+];
+
+const productData = [
+  {
+    value: "Bread",
+    label: "Bread",
+    children: [
+      {
+        value: "White Bread",
+        label: "White Bread",
+      },
+      {
+        value: "Brown Bread",
+        label: "Brown Bread",
+      },
+    ],
+  },
+  {
+    value: "Beer",
+    label: "Beer",
+    children: [
+      {
+        value: "Suntory",
+        label: "Suntory",
+      },
+      {
+        value: "Asahi",
+        label: "Asahi",
+      },
+    ],
+  },
+];
+
+const { confirm } = Modal;
+
+function showConfirm() {
+  confirm({
+    title: 'Do you want to submit the request to create a Campaign?',
+    icon: <ExclamationCircleOutlined />,
+    content: 'A new Campaign will be created after confirming',
+    onOk() {
+      console.log('OK');
+      window.location.href = "/result";
+    },
+    onCancel() {
+      console.log('Cancel');
+    },
+  });
+}
+
+function onCascaderChange(value: any) {
+  console.log(value);
+}
 
 function onChange(date: any, dateString: any) {
   console.log(date, dateString);
-}
-
-function onCheckChange(checkedValues: any) {
-  console.log("checked = ", checkedValues);
-}
-
-function campaignReturn(key: any) {
-  console.log(key);
-  window.location.href = "/campaign";
-}
-
-function returnReports(key: any) {
-  console.log(key);
-  window.location.href = "/reports";
 }
 
 function handleChange(value: any) {
@@ -52,25 +146,6 @@ function callback(key: any) {
 
 function onChangeNumber(value: any) {
   console.log("changed", value);
-}
-
-function signOut(key: any) {
-  console.log(key);
-  window.location.href = "/login";
-}
-
-function enableSection2(key: any){
-  console.log(key);
-}
-
-function homeReturn(key: any) {
-  console.log(key);
-  window.location.href = "/";
-}
-
-function redirectResult(key: any) {
-  console.log(key);
-  window.location.href = "/result";
 }
 
 interface HomeProps {
@@ -105,13 +180,14 @@ let campaignCategoryData = {
   options: ["Bread", "Onigiri", "Beer", "Wine"],
 };
 
+let breadCategoryData = {
+  campaignCategory: "Choose Campaign Category",
+  options: ["White-Bread", "Brown-Bread", "Crossiant"],
+};
+
 let campaignTypologyData = {
   metadata: {
     typology: [
-      {
-        category: "Promoted Product",
-        options: ["Leader", "Innovation", "Challenger", "Other"],
-      },
       {
         category: "Pricipal",
         options: [
@@ -125,109 +201,64 @@ let campaignTypologyData = {
       {
         category: "Secondary",
         options: [
-          "Frequesncy",
+          "Frequency",
           "Unit/Trips",
           "Unit/Shopper",
           "Retention",
           "New Buyer",
         ],
       },
-      {
-        category: "Category Health",
-        options: ["Growing", "Stable", "Decreasing"],
-      },
-      {
-        category: "Seasonability",
-        options: ["Winter", "Summer", "NO"],
-      },
     ],
   },
 };
 function Campaign(props: HomeProps) {
+
+  const [form] = Form.useForm();
+
+  const printCategory = (value: string) => {
+    switch (value) {
+      case "White-Bread":
+        form.setFieldsValue({ brandCategory: "White Bread" });
+        return;
+      case "Brown-Bread":
+        form.setFieldsValue({ brandCategory: "Brown Bread" });
+        return;
+      case "Crossiant":
+        form.setFieldsValue({ brandCategory: "Crossiant" });
+        return;
+    }
+  };
+
+  const onCheckChange = (value: any) => {
+    console.log("checked = ", value);
+    switch (value[0]) {
+      case "Print Budget":
+        form.setFieldsValue({ printBudget: false });
+        return;
+    }
+  }
+
+  const fillBrand = (e: any) => {
+    form.setFieldsValue({ brandName: e.target.value });
+  };
+
+  const onPrintNumber = (e: any) => {
+    form.setFieldsValue({ discountPrice: "¥ " + e + " Off" });
+  };
+
+  const imageUpload = (e: any) => {
+    form.setFieldsValue({ brandImage: e.thumbUrl });
+  };
+
+  const onFinish = (values: any) => {
+    console.log(values);
+  };
+
   return (
     <Layout>
-      <Sider
-        breakpoint="lg"
-        collapsedWidth="100"
-        onBreakpoint={(broken) => {
-          console.log(broken);
-        }}
-        onCollapse={(collapsed, type) => {
-          console.log(collapsed, type);
-        }}
-      >
-        <div className="logo">
-          <Image src={logoImage} />
-        </div>
-        <Menu theme="dark" mode="inline" defaultSelectedKeys={["4"]}>
-        <Menu.Item
-            key="1"
-            icon={<BarChartOutlined style={{ fontSize: "20px" }} />}
-            onClick={homeReturn}
-          >
-            Campaign Status
-          </Menu.Item>
-          <Menu.Item
-            key="2"
-            icon={<PlusCircleOutlined style={{ fontSize: "20px" }} />}
-            onClick={campaignReturn}
-          >
-          Campaign Setup
-          </Menu.Item>
-          <Menu.Item
-            key="3"
-            icon={<BarChartOutlined style={{ fontSize: "20px" }} />}
-            onClick={returnReports}
-          >
-            Reports
-          </Menu.Item>
-        </Menu>
-      </Sider>
+      <MenuComponent/>
       <Layout>
-      <Header
-          className="site-layout-sub-header-background"
-          style={{ background: "White", padding: 0 }}
-        >
-          <div>
-            <div className="ant-row">
-              <div className="ant-col ant-col-4"></div>
-              
-              <div className="ant-col ant-col-4">
-                <div style={{ fontSize: "20px", textAlign: "right" }}>
-                  <a onClick={campaignReturn}>
-                    {<PlusCircleOutlined />}Campaign Setup
-                  </a>
-                </div>
-              </div>
-              <div className="ant-col ant-col-1"></div>
-              <div className="ant-col ant-col-4">
-              <div style={{ fontSize: "20px", textAlign: "left" }}>
-                  <a onClick={homeReturn}>{<BarChartOutlined />}Campaign Status</a>
-                </div>
-              </div>
-              <div className="ant-col ant-col-2">
-                <div style={{ fontSize: "20px", textAlign: "left" }}>
-                  <a onClick={returnReports}>{<BarChartOutlined />}Reports</a>
-                </div>
-              </div>
-              <div className="ant-col ant-col-2"></div>
-              <div
-                className="ant-col ant-col-6"
-                style={{ fontSize: "20px", textAlign: "end" }}
-              >
-                {props.isLoggedIn && (
-                  <div className="home">
-                    <div>
-                      {" "}
-                      {props.message}, {props.name} <Space/> 
-                      <a href="/login">{<LogoutOutlined disabled style={{ fontSize: "20px" }} />}</a>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </Header>
+      <HeaderComponent isLoggedIn={true} message={"Welcome"} name={"Admin"}/>
         <Content style={{ margin: "24px 16px 0" }}>
           <div
             className="site-layout-background"
@@ -341,11 +372,6 @@ function Campaign(props: HomeProps) {
                       </Col>
                       <Col span={2}></Col>
                       <Col span={2}>
-                        <Button type="primary"
-                        style={{ verticalAlign: "End", width: 80 }}
-                        onSubmit={enableSection2}>
-                          Next
-                          </Button>
                       </Col>
                     </Row>
                   </div>
@@ -359,62 +385,456 @@ function Campaign(props: HomeProps) {
                             <br></br>
                             <Row gutter={24}>
                               <Col>
-                              <div>
-                              <label>{categories.category}</label>
-                            </div>
-                            <Radio.Group
-                              defaultValue={categories.options[0]}
-                              buttonStyle="solid"
-                              key={categories.category}
-                              name={categories.category}
-                            >
-                              {categories.options.map((option) => {
-                                return (
-                                  <Radio.Button value={option}>
-                                    {option}
-                                  </Radio.Button>
-                                );
-                              })}
-                            </Radio.Group>
-                              </Col>
-                              {categories.category === "Seasonability" && (
-                                <Col span={19}>
-                              <div className="home">
-                              <Space>
-                                <Button
-                                  type="primary"
-                                  style={{ verticalAlign: "End", width: 80 }}
+                                <div>
+                                  <label>{categories.category}</label>
+                                </div>
+                                <Radio.Group
+                                  defaultValue={categories.options[0]}
+                                  buttonStyle="solid"
+                                  key={categories.category}
+                                  name={categories.category}
                                 >
-                                  Previous
-                                </Button>
-                                <Button
-                                  type="primary"
-                                  style={{ verticalAlign: "End", width: 80 }}
-                                >
-                                  Next
-                                </Button>
-                                </Space>
-                              </div>
+                                  {categories.options.map((option) => {
+                                    return (
+                                      <Radio.Button value={option}>
+                                        {option}
+                                      </Radio.Button>
+                                    );
+                                  })}
+                                </Radio.Group>
                               </Col>
-                            )}
+                              {categories.category === "Secondary" && (
+                                <Col span={24}>
+                                  </Col>
+                              )}
                             </Row>
                           </div>
                         );
                       }
                     )}
                   </div>
-                  {/* <div>
-                    <iframe width="800" height="800"
-                    src="https://app.powerbi.com/reportEmbed?reportId=94f8e10f-00db-4990-b207-7d97e7248d38&autoAuth=true&ctid=2eddc39c-2996-4c2a-ab97-f767c39ea155&config=eyJjbHVzdGVyVXJsIjoiaHR0cHM6Ly93YWJpLXVzLWVhc3QyLXJlZGlyZWN0LmFuYWx5c2lzLndpbmRvd3MubmV0LyJ9"></iframe>
-
-
-                  </div> */}
                 </Panel>
-                <Panel header="Approve Budget" key="3">
+                <Panel header="Print Trigger" key="3">
                   <div>
+                    <Tabs defaultActiveKey="1">
+                      <TabPane
+                        tab={
+                          <span>
+                            Fixed Format
+                          </span>
+                        }
+                        key="1"
+                      >
+                        <Tabs defaultActiveKey="1">
+                          <TabPane
+                            tab={
+                              <span>
+                                Transaction based
+                              </span>
+                            }
+                            key="1"
+                          >
+                            <div>
+                              <Radio.Group defaultValue="a" buttonStyle="solid">
+                                <Space>
+                                  <Radio.Button value="a">Repeat</Radio.Button>
+                                  <Radio.Button value="b">Related</Radio.Button>
+                                </Space>
+                              </Radio.Group>
+                            </div>
+                          </TabPane>
+                          <TabPane
+                            tab={
+                              <span>
+                                Card based
+                              </span>
+                            }
+                            key="2"
+                          >
+                            <div>
+                              <Radio.Group defaultValue="a" buttonStyle="solid">
+                                <Space>
+                                  <Radio.Button value="a">Heavy</Radio.Button>
+                                  <Radio.Button value="b">Middle</Radio.Button>
+                                  <Radio.Button value="c">Light</Radio.Button>
+                                </Space>
+                              </Radio.Group>
+                            </div>
+                          </TabPane>
+                          <TabPane
+                            tab={
+                              <span>
+                                Mixed based
+                              </span>
+                            }
+                            key="3"
+                          >
+                            <div>
+                              <Radio.Group defaultValue="a" buttonStyle="solid">
+                                <Space>
+                                  <Radio.Button value="a">Repeat</Radio.Button>
+                                  <Radio.Button value="b">Related</Radio.Button>
+                                </Space>
+                              </Radio.Group>
+                            </div>
+                            <br />
+                            <div>
+                              <Radio.Group defaultValue="a" buttonStyle="solid">
+                                <Space>
+                                  <Radio.Button value="a">Heavy</Radio.Button>
+                                  <Radio.Button value="b">Middle</Radio.Button>
+                                  <Radio.Button value="c">Light</Radio.Button>
+                                </Space>
+                              </Radio.Group>
+                            </div>
+                            <br />
+                            <div>
+                              <Radio.Group defaultValue="a" buttonStyle="solid">
+                                <Space>
+                                  <Radio.Button value="a">Did Buy</Radio.Button>
+                                  <Radio.Button value="b">
+                                    Didn't Buy
+                                  </Radio.Button>
+                                </Space>
+                              </Radio.Group>
+                            </div>
+                          </TabPane>
+                        </Tabs>
+                      </TabPane>
+                      <TabPane
+                        tab={
+                          <span>
+                            Free Format
+                          </span>
+                        }
+                        key="2"
+                      >
+                        <div className="site-card-wrapper">
+                          <Row gutter={16}>
+                            <Col span={8}>
+                              <div>
+                                <label>Period</label>
+                              </div>
+                              <div>
+                                <RangePicker onChange={onChange} />
+                              </div>
+                            </Col>
+                            <Col span={8}>
+                              <div>
+                                <label>Store</label>
+                              </div>
+                              <div>
+                                <Cascader
+                                  options={areaData}
+                                  onChange={onCascaderChange}
+                                  placeholder="Please Select the Store"
+                                  changeOnSelect
+                                />
+                              </div>
+                            </Col>
+                            <Col span={8}>
+                              <div>
+                                <label>Customer</label>
+                              </div>
+                              <div>
+                                <Space>
+                                  <Select
+                                    placeholder="Gender"
+                                    onChange={onChange}
+                                    style={{ width: 100 }}
+                                  >
+                                    <Option value="male">Male</Option>
+                                    <Option value="female">Female</Option>
+                                    <Option value="other">Other</Option>
+                                  </Select>
+                                  <Select
+                                    placeholder="Age"
+                                    onChange={onChange}
+                                    style={{ width: 100 }}
+                                  >
+                                    <Option value="1">1-5</Option>
+                                    <Option value="6">6-10</Option>
+                                    <Option value="11">11-15</Option>
+                                    <Option value="16">16-20</Option>
+                                    <Option value="21">21-25</Option>
+                                    <Option value="26">26-30</Option>
+                                  </Select>
+                                </Space>
+                              </div>
+                            </Col>
+                            </Row>
+                            <br/>
+                            <Row gutter={16}>
+                            <Col span={8}>
+                              <div>
+                                <label>Product</label>
+                              </div>
+                              <div>
+                                <Space>
+                                <Cascader
+                                  options={productData}
+                                  onChange={onCascaderChange}
+                                  placeholder="Product Category"
+                                  changeOnSelect
+                                />
+                                <InputNumber
+                                placeholder="Min"
+                                  min={0}
+                                  max={1000}
+                                  step={1}
+                                  onChange={onChangeNumber}
+                                />
+                                ~
+                                <InputNumber
+                                placeholder="Max"
+                                  min={0}
+                                  max={1000}
+                                  step={1}
+                                  onChange={onChangeNumber}
+                                />
+                                </Space>
+                              </div>
+                            </Col>
+                          </Row>
+                          <br/>
+                        </div>
+                      </TabPane>
+                    </Tabs>
+                    {/* <div className="home">
+                      <Space>
+                        <Button
+                          type="primary"
+                          style={{ verticalAlign: "End", width: 80 }}
+                        >
+                          Previous
+                        </Button>
+                        <Button
+                          type="primary"
+                          style={{ verticalAlign: "End", width: 80 }}
+                        >
+                          Next
+                        </Button>
+                      </Space>
+                    </div> */}
+                  </div>
+                </Panel>
+                <Panel header="Coupon Design" key="4">
+                <div
+            className="site-layout-background"
+            style={{ padding: 24, minHeight: 660 }}
+          >
+            <div className="site-card-wrapper">
+              <Row gutter={16}>
+                <Col span={6}>
+                  <label>Brand Name</label>
+                </Col>
+                <Col span={6}>
+                  <label>Brand Category</label>
+                </Col>
+                <Col span={6}>
+                  <label>Discount Price in JPY</label>
+                </Col>
+                <Col span={6}>
+                  <label>Please Upload Campaign Print</label>
+                </Col>
+              </Row>
+              <br />
+              <Row gutter={16}>
+                <Col span={4}>
+                  <div>
+                    <Tooltip title="Enter the Brand name">
+                      <Input placeholder="Brand Name" onChange={fillBrand} />
+                    </Tooltip>
+                  </div>
+                </Col>
+                <Col span={2} />
+                <Col span={6}>
+                  <div>
+                    <Select
+                      defaultValue={breadCategoryData.options[0]}
+                      style={{ width: 120 }}
+                      onChange={printCategory}
+                    >
+                      {breadCategoryData.options.map((answer) => {
+                        return (
+                          <Option key={answer} value={answer}>
+                            {answer}
+                          </Option>
+                        );
+                      })}
+                    </Select>
+                  </div>
+                </Col>
+                <Col span={6}>
+                  <div>
+                    <InputNumber
+                      min={0}
+                      max={10000}
+                      step={10}
+                      onChange={onPrintNumber}
+                    />
+                  </div>
+                </Col>
+                <Col span={6}>
+                  <Space
+                    direction="vertical"
+                    style={{ width: "100%" }}
+                    size="large"
+                  >
+                    <Upload
+                      action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                      listType="picture"
+                      onPreview={imageUpload}
+                    >
+                      <Button icon={<UploadOutlined />}>
+                        Please upload the image
+                      </Button>
+                    </Upload>
+                  </Space>
+                </Col>
+              </Row>
+              <br />
+              <div title="Coupon Design" style={{ fontSize: "20px" }}>
+                Coupon design
+              </div>
+              <br />
+              <div
+                title="Coupon Design"
+                style={{
+                  border: "groove",
+                  fontSize: "20px",
+                  width: "60%",
+                  height: "260px",
+                }}
+              >
+                <Form
+                  {...layout}
+                  form={form}
+                  name="control-hooks"
+                  onFinish={onFinish}
+                >
+                  <Row gutter={26}>
+                    <Col span={8}>
+                      <Form.Item
+                        style={{ fontSize: "30px", paddingLeft: "10px" , paddingTop: "10px" }}
+                        name="brandName"
+                      >
+                        <Input style={{ width: "200px",fontSize: "25px", color:"red"}} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                      <Form.Item
+                        style={{ fontSize: "30px", paddingLeft: "20px", paddingTop: "10px" }}
+                        name="brandCategory"
+                      >
+                        <Input style={{ width: "150px", fontSize: "20px"}} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                      <Form.Item
+                        style={{ fontSize: "30px", paddingLeft: "10px" }}
+                      >
+                        <label style={{ width: "200px", fontSize: "13px",  color:"grey",
+                            fontWeight:"bolder", paddingLeft: "10px"
+                            }}>
+                          {formatDate(new Date())}
+                        </label>
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                  <Row gutter={26}>
+                    <Col span={8}>
+                      <Form.Item
+                        style={{ fontSize: "30px", paddingLeft: "10px" }}
+                        name="brandImage"
+                        valuePropName="src"
+                      >
+                        <Image
+                          style={{ height: "140px", width: "200px" }}
+                        ></Image>
+                      </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                      <Row>
+                        <label style={{ width: "200px", paddingLeft: "30px" }}>
+                          XXXXXXXXXXXXX
+                        </label>
+                      </Row>
+                      <Row>
+                        <Form.Item
+                          style={{ fontSize: "30px", paddingLeft: "20px" }}
+                          name="discountPrice"
+                        >
+                          <Input style={{ width: "150px", fontSize: "25px"}}></Input>
+                        </Form.Item>
+                      </Row>
+                      <Row>
+                        <label style={{ width: "200px", paddingLeft: "30px" }}>
+                          XXXXXXXXXXXXX
+                        </label>
+                      </Row>
+                    </Col>
+                    <Col span={8}>
+                      <Row>
+                        <label
+                          style={{
+                            width: "180px",
+                            fontSize: "20px",
+                            paddingLeft: "10px",
+                            color:"grey",
+                            fontWeight:"bolder"
+                          }}
+                        >
+                          Checkout Markets
+                        </label>
+                      </Row>
+                      <Row>
+                        <Form.Item
+                          style={{ fontSize: "30px", paddingLeft: "10px" }}
+                        >
+                          <Image
+                            style={{ height: "140px", width: "170px" }}
+                            src={barCodeImage}
+                          ></Image>
+                        </Form.Item>
+                      </Row>
+                    </Col>
+                  </Row>
+
+                  
+                </Form>
+              </div>
+            </div>
+          </div>
+                </Panel>
+                <Panel header="Approve Budget" key="5">
+                <Form
+      name="kpi_list"
+      className="kpi_list"
+      initialValues={{ remember: true }}
+      onFinish={onFinish}
+    >
+                  <div>
+                  
                     <div>
                       <label>{kpiListData.kpiType}</label>
                     </div>
+                    {/* <Form.Item name="printBudgetCheck" valuePropName="checked" noStyle>
+          <Checkbox onChange={onCheckChange}>Print Budget</Checkbox>
+        </Form.Item>
+        <Form.Item name="redemptionBudgetCheck" valuePropName="checked" noStyle>
+          <Checkbox>Redemption Budget</Checkbox>
+        </Form.Item>
+        <Form.Item name="totalBudgetCheck" valuePropName="checked" noStyle>
+          <Checkbox>Total Budget</Checkbox>
+        </Form.Item>
+        <Form.Item name="redemptionContributionCheck" valuePropName="checked" noStyle>
+          <Checkbox>Redemption Contribution</Checkbox>
+        </Form.Item>
+        <Form.Item name="trialCheck" valuePropName="checked" noStyle>
+          <Checkbox>Trial</Checkbox>
+        </Form.Item> */}
+                    
                     <Checkbox.Group
                       options={kpiListData.options}
                       onChange={onCheckChange}
@@ -424,7 +844,7 @@ function Campaign(props: HomeProps) {
                   <div className="site-card-wrapper">
                     <Row gutter={16}>
                       <Col span={6}>
-                        <div className="totoalContacts">
+                      <div className="totoalContacts">
                           <label>Total Contacts</label>
                         </div>
                         <div className="site-card-wrapper">
@@ -449,7 +869,8 @@ function Campaign(props: HomeProps) {
                         </div>
                       </Col>
                       <Col span={6}>
-                        <div className="printBudget">
+                      <Form.Item name="printBudget" valuePropName="visible">
+                        <div>
                           <label>Print Budget In JPY</label>
                         </div>
                         <div className="site-card-wrapper">
@@ -482,6 +903,9 @@ function Campaign(props: HomeProps) {
                             </Col>
                           </Row>
                         </div>
+                        
+                        </Form.Item>
+                        
                       </Col>
                       <Col span={6}>
                         <div className="redemptionBudget">
@@ -520,7 +944,7 @@ function Campaign(props: HomeProps) {
                       </Col>
                     </Row>
                     <br></br>
-                    <Row gutter={20}>
+                    <Row gutter={24}>
                       <Col span={6}>
                         <div className="totalBudget">
                           <label>Total Budget In JPY</label>
@@ -627,61 +1051,38 @@ function Campaign(props: HomeProps) {
                         </div>
                       </Col>
                       <Col span={6}>
-                      <Space>
-                        <Button
-                          type="primary"
-                          style={{ verticalAlign: "End", width: 80 }}
-                        >
-                          Previous
-                        </Button>
+                      <Row gutter={16}>
+                            <Col span={8}></Col>
+                            <Col span={8}>
+                        <Space>
+                          {/* <Button
+                            type="primary"
+                            style={{ verticalAlign: "End", width: 80 }}
+                          >
+                            Previous
+                          </Button> */}
 
-                        <Button
-                          type="primary"
-                          style={{ verticalAlign: "End", width: 80 }}
-                          onClick={redirectResult}
-                        >
-                          Approve
-                        </Button>
+                          <Button
+                            type="primary"
+                            style={{ verticalAlign: "End", width: 80 }}
+                            onClick={showConfirm}
+                          >
+                            Approve
+                          </Button>
                         </Space>
+                        </Col>
+                        </Row>
+                        
                       </Col>
                     </Row>
                   </div>
+                  </Form>
                 </Panel>
               </Collapse>
             </div>
           </div>
         </Content>
-        <Footer>
-          <div>
-            <div className="ant-row">
-              <div className="ant-col ant-col-8">
-                <div>
-                  <a
-                    href="https://www.linkedin.com/company/catalina-marketing-japan/"
-                    style={{ fontSize: "25px" }}
-                  >
-                    {<LinkedinOutlined />}
-                  </a>
-                  <a
-                    href="https://www.facebook.com/catalinamkt.jp"
-                    style={{ fontSize: "25px" }}
-                  >
-                    {<FacebookOutlined />}
-                  </a>
-                  <a
-                    href="https://catalina-jp.com/"
-                    style={{ fontSize: "25px" }}
-                  >
-                    {<GlobalOutlined />}
-                  </a>
-                </div>
-              </div>
-              <div className="ant-col ant-col-8" style={{ fontSize: "15px" }}>
-                ©Copyright 2020 Catalina. All rights reserved.
-              </div>
-            </div>
-          </div>
-        </Footer>
+        <FooterComponent/>
       </Layout>
     </Layout>
   );

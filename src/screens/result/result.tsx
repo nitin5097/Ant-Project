@@ -5,7 +5,6 @@ import {
   Layout,
   Menu,
   Image,
-  Select,
   Button,
 } from "antd";
 import {
@@ -18,11 +17,6 @@ import {
 } from "@ant-design/icons";
 import logoImage from "../../Image/logo_white.png";
 const { Header, Footer, Sider, Content } = Layout;
-
-function signOut(key: any) {
-  console.log(key);
-  window.location.href = "/login";
-}
 
 function campaignReturn(key: any) {
   console.log(key);
