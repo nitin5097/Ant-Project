@@ -3,7 +3,7 @@ import "./analyze.scss";
 import MenuComponent from "../components/menuComponent";
 import HeaderComponent from "../components/headerComponent";
 import FooterComponent from "../components/footerComponent";
-import { Layout, Card, Row, Col } from "antd";
+import { Layout, Row, Col } from "antd";
 import Tree from 'react-d3-tree';
 const { Content } = Layout;
 const salesData: { x: string; y: number }[] = [];

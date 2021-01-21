@@ -23,6 +23,7 @@ import {
 import { Form, Input} from 'antd';
 import { Upload } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
+import { Width } from "devextreme-react/chart";
 
 const layout = {
   labelCol: { span: 8 },
@@ -189,7 +190,7 @@ let campaignTypologyData = {
   metadata: {
     typology: [
       {
-        category: "Pricipal",
+        category: "Principal",
         options: [
           "Volumes",
           "Incremental Volumes",
@@ -252,6 +253,7 @@ function Campaign(props: HomeProps) {
 
   const onFinish = (values: any) => {
     console.log(values);
+    showConfirm();
   };
 
   return (
@@ -264,6 +266,25 @@ function Campaign(props: HomeProps) {
             className="site-layout-background"
             style={{ padding: 24, minHeight: 660 }}
           >
+            <Form
+                  {...layout}
+                  form={form}
+                  name="control-hooks"
+                  onFinish={onFinish}
+                  initialValues={{ 
+                    campaignType:"In-Store",
+                    campaignList:"Cmp_Jan_01",
+                    campaignCategory:"Bread",
+                    Principal:"Volumes",
+                    Secondary:"Frequency",
+                    transactionBased:"a",
+                    cardBased:"a",
+                    mixedBased1:"a",
+                    mixedBased2:"a",
+                    mixedBased3:"a",
+                    designBreadCategory:"White-Bread"
+                   }}
+                >
             <div>
               <Collapse defaultActiveKey={["1"]} onChange={callback}>
                 <Panel header="Choose Campaign Industrial and cycle" key="1">
@@ -274,8 +295,10 @@ function Campaign(props: HomeProps) {
                           <label>{campaignTypeData.campaignType}</label>
                         </div>
                         <div>
+                        <Form.Item 
+                        name="campaignType"
+                       >
                           <Select
-                            defaultValue={campaignTypeData.options[0]}
                             style={{ width: 120 }}
                             onChange={handleChange}
                           >
@@ -287,6 +310,7 @@ function Campaign(props: HomeProps) {
                               );
                             })}
                           </Select>
+                          </Form.Item>
                         </div>
                       </Col>
                       <Col span={6}>
@@ -294,8 +318,10 @@ function Campaign(props: HomeProps) {
                           <label>{campaignListData.campaignList}</label>
                         </div>
                         <div>
+                        <Form.Item 
+                        name="campaignList"
+                       >
                           <Select
-                            defaultValue={campaignListData.options[0]}
                             style={{ width: 120 }}
                             onChange={handleChange}
                           >
@@ -307,6 +333,7 @@ function Campaign(props: HomeProps) {
                               );
                             })}
                           </Select>
+                          </Form.Item>
                         </div>
                       </Col>
                       <Col span={6}>
@@ -314,8 +341,10 @@ function Campaign(props: HomeProps) {
                           <label>{campaignCategoryData.campaignCategory}</label>
                         </div>
                         <div>
+                        <Form.Item 
+                        name="campaignCategory"
+                       >
                           <Select
-                            defaultValue={campaignCategoryData.options[0]}
                             style={{ width: 120 }}
                             onChange={handleChange}
                           >
@@ -327,17 +356,16 @@ function Campaign(props: HomeProps) {
                               );
                             })}
                           </Select>
+                          </Form.Item>
                         </div>
                       </Col>
                     </Row>
                     <br></br>
                     <Row gutter={16}>
-                      <Col span={6}>
-                        <div>Start Date</div>
+                      <Col span={12}>
+                        <div>Campaign Execution Date</div>
                       </Col>
-                      <Col span={6}>
-                        <div>End Date</div>
-                      </Col>
+                      
                       <Col span={6}>
                         <div>
                           <label>Discount Amount (In JPY)</label>
@@ -346,28 +374,30 @@ function Campaign(props: HomeProps) {
                       <Col span={6}></Col>
                     </Row>
                     <Row gutter={16}>
+                      <Col span={12}>
+                      <Form.Item 
+                        name="campaignDateRange"
+                        rules={[
+                          { required: true, message: "Please input the Dates!" },
+                        ]}
+                        >
+                                <RangePicker onChange={onChange} style={{width:"340px"}}/>
+                                </Form.Item>
+                       </Col>
                       <Col span={6}>
                         <div>
-                          <Space direction="vertical">
-                            <DatePicker onChange={onChange} />
-                          </Space>
-                        </div>
-                      </Col>
-                      <Col span={6}>
-                        <div>
-                          <Space direction="vertical">
-                            <DatePicker onChange={onChange} />
-                          </Space>
-                        </div>
-                      </Col>
-                      <Col span={6}>
-                        <div>
+                        <Form.Item 
+                        name="discount"
+                        rules={[
+                          { required: true, message: "Please input Discount amount!" },
+                        ]}>
                           <InputNumber
                             min={0}
                             max={10000}
                             step={10}
                             onChange={onChangeNumber}
                           />
+                          </Form.Item>
                         </div>
                       </Col>
                       <Col span={2}></Col>
@@ -382,14 +412,17 @@ function Campaign(props: HomeProps) {
                       (categories) => {
                         return (
                           <div>
+                            
                             <br></br>
                             <Row gutter={24}>
-                              <Col>
+                              <Col span={20}>
                                 <div>
                                   <label>{categories.category}</label>
                                 </div>
+                                <Form.Item 
+                        name={categories.category}
+                       >
                                 <Radio.Group
-                                  defaultValue={categories.options[0]}
                                   buttonStyle="solid"
                                   key={categories.category}
                                   name={categories.category}
@@ -402,12 +435,14 @@ function Campaign(props: HomeProps) {
                                     );
                                   })}
                                 </Radio.Group>
+                                </Form.Item>
                               </Col>
-                              {categories.category === "Secondary" && (
+                              {/* {categories.category === "Secondary" && (
                                 <Col span={24}>
                                   </Col>
-                              )}
+                              )} */}
                             </Row>
+                            
                           </div>
                         );
                       }
@@ -435,12 +470,16 @@ function Campaign(props: HomeProps) {
                             key="1"
                           >
                             <div>
-                              <Radio.Group defaultValue="a" buttonStyle="solid">
+                            <Form.Item 
+                        name="transactionBased"
+                        >
+                              <Radio.Group name="transactionBased" buttonStyle="solid">
                                 <Space>
                                   <Radio.Button value="a">Repeat</Radio.Button>
                                   <Radio.Button value="b">Related</Radio.Button>
                                 </Space>
                               </Radio.Group>
+                              </Form.Item>
                             </div>
                           </TabPane>
                           <TabPane
@@ -452,13 +491,17 @@ function Campaign(props: HomeProps) {
                             key="2"
                           >
                             <div>
-                              <Radio.Group defaultValue="a" buttonStyle="solid">
+                            <Form.Item 
+                        name="cardBased"
+                        >
+                              <Radio.Group name="cardBased" buttonStyle="solid">
                                 <Space>
                                   <Radio.Button value="a">Heavy</Radio.Button>
                                   <Radio.Button value="b">Middle</Radio.Button>
                                   <Radio.Button value="c">Light</Radio.Button>
                                 </Space>
                               </Radio.Group>
+                              </Form.Item>
                             </div>
                           </TabPane>
                           <TabPane
@@ -470,26 +513,37 @@ function Campaign(props: HomeProps) {
                             key="3"
                           >
                             <div>
-                              <Radio.Group defaultValue="a" buttonStyle="solid">
+                            <Form.Item 
+                        name="mixedBased1"
+                        >
+                              <Radio.Group name="mixedBased1" buttonStyle="solid">
                                 <Space>
                                   <Radio.Button value="a">Repeat</Radio.Button>
                                   <Radio.Button value="b">Related</Radio.Button>
                                 </Space>
                               </Radio.Group>
+                              </Form.Item>
                             </div>
                             <br />
                             <div>
-                              <Radio.Group defaultValue="a" buttonStyle="solid">
+                            <Form.Item 
+                        name="mixedBased2"
+                        >
+                              <Radio.Group name="mixedBased2" buttonStyle="solid">
                                 <Space>
                                   <Radio.Button value="a">Heavy</Radio.Button>
                                   <Radio.Button value="b">Middle</Radio.Button>
                                   <Radio.Button value="c">Light</Radio.Button>
                                 </Space>
                               </Radio.Group>
+                              </Form.Item>
                             </div>
                             <br />
                             <div>
-                              <Radio.Group defaultValue="a" buttonStyle="solid">
+                            <Form.Item 
+                        name="mixedBased3"
+                        >
+                              <Radio.Group name="mixedBased3" buttonStyle="solid">
                                 <Space>
                                   <Radio.Button value="a">Did Buy</Radio.Button>
                                   <Radio.Button value="b">
@@ -497,6 +551,7 @@ function Campaign(props: HomeProps) {
                                   </Radio.Button>
                                 </Space>
                               </Radio.Group>
+                              </Form.Item>
                             </div>
                           </TabPane>
                         </Tabs>
@@ -516,7 +571,11 @@ function Campaign(props: HomeProps) {
                                 <label>Period</label>
                               </div>
                               <div>
+                              <Form.Item 
+                        name="extractByDateRange"
+                        >
                                 <RangePicker onChange={onChange} />
+                                </Form.Item>
                               </div>
                             </Col>
                             <Col span={8}>
@@ -524,12 +583,16 @@ function Campaign(props: HomeProps) {
                                 <label>Store</label>
                               </div>
                               <div>
+                              <Form.Item 
+                        name="extractByStore"
+                        >
                                 <Cascader
                                   options={areaData}
                                   onChange={onCascaderChange}
                                   placeholder="Please Select the Store"
                                   changeOnSelect
                                 />
+                                </Form.Item>
                               </div>
                             </Col>
                             <Col span={8}>
@@ -537,7 +600,11 @@ function Campaign(props: HomeProps) {
                                 <label>Customer</label>
                               </div>
                               <div>
+                              
                                 <Space>
+                                <Form.Item 
+                        name="extractByCustomerGender"
+                        >
                                   <Select
                                     placeholder="Gender"
                                     onChange={onChange}
@@ -547,6 +614,10 @@ function Campaign(props: HomeProps) {
                                     <Option value="female">Female</Option>
                                     <Option value="other">Other</Option>
                                   </Select>
+                                  </Form.Item>
+                                  <Form.Item 
+                        name="extractByCustomerAge"
+                        >
                                   <Select
                                     placeholder="Age"
                                     onChange={onChange}
@@ -559,6 +630,7 @@ function Campaign(props: HomeProps) {
                                     <Option value="21">21-25</Option>
                                     <Option value="26">26-30</Option>
                                   </Select>
+                                  </Form.Item>
                                 </Space>
                               </div>
                             </Col>
@@ -571,12 +643,19 @@ function Campaign(props: HomeProps) {
                               </div>
                               <div>
                                 <Space>
+                                <Form.Item 
+                        name="extractByProduct"
+                        >
                                 <Cascader
                                   options={productData}
                                   onChange={onCascaderChange}
                                   placeholder="Product Category"
                                   changeOnSelect
                                 />
+                                </Form.Item>
+                                <Form.Item 
+                        name="extractByMinProduct"
+                        >
                                 <InputNumber
                                 placeholder="Min"
                                   min={0}
@@ -584,7 +663,11 @@ function Campaign(props: HomeProps) {
                                   step={1}
                                   onChange={onChangeNumber}
                                 />
+                                </Form.Item>
                                 ~
+                                <Form.Item 
+                        name="extractByMaxProduct"
+                        >
                                 <InputNumber
                                 placeholder="Max"
                                   min={0}
@@ -592,6 +675,7 @@ function Campaign(props: HomeProps) {
                                   step={1}
                                   onChange={onChangeNumber}
                                 />
+                                </Form.Item>
                                 </Space>
                               </div>
                             </Col>
@@ -643,15 +727,24 @@ function Campaign(props: HomeProps) {
                 <Col span={4}>
                   <div>
                     <Tooltip title="Enter the Brand name">
+                    <Form.Item 
+                        name="designBrandName"
+                        rules={[
+                          { required: true, message: "Please input Brand Name!" },
+                        ]}>
                       <Input placeholder="Brand Name" onChange={fillBrand} />
+                      </Form.Item>
                     </Tooltip>
                   </div>
                 </Col>
                 <Col span={2} />
                 <Col span={6}>
                   <div>
+                  <Form.Item 
+                        name="designBreadCategory"
+                        >
                     <Select
-                      defaultValue={breadCategoryData.options[0]}
+                      // defaultValue={breadCategoryData.options[0]}
                       style={{ width: 120 }}
                       onChange={printCategory}
                     >
@@ -663,19 +756,31 @@ function Campaign(props: HomeProps) {
                         );
                       })}
                     </Select>
+                    </Form.Item>
                   </div>
                 </Col>
                 <Col span={6}>
                   <div>
+                  <Form.Item 
+                        name="designDiscount"
+                        rules={[
+                          { required: true, message: "Please input Discount!" },
+                        ]}>
                     <InputNumber
                       min={0}
                       max={10000}
                       step={10}
                       onChange={onPrintNumber}
                     />
+                    </Form.Item>
                   </div>
                 </Col>
                 <Col span={6}>
+                <Form.Item 
+                        name="designImageUpload"
+                        rules={[
+                          { required: true, message: "Please upload the image!" },
+                        ]}>
                   <Space
                     direction="vertical"
                     style={{ width: "100%" }}
@@ -691,6 +796,7 @@ function Campaign(props: HomeProps) {
                       </Button>
                     </Upload>
                   </Space>
+                  </Form.Item>
                 </Col>
               </Row>
               <br />
@@ -707,12 +813,7 @@ function Campaign(props: HomeProps) {
                   height: "260px",
                 }}
               >
-                <Form
-                  {...layout}
-                  form={form}
-                  name="control-hooks"
-                  onFinish={onFinish}
-                >
+                
                   <Row gutter={26}>
                     <Col span={8}>
                       <Form.Item
@@ -802,18 +903,13 @@ function Campaign(props: HomeProps) {
                   </Row>
 
                   
-                </Form>
+                
               </div>
             </div>
           </div>
                 </Panel>
                 <Panel header="Approve Budget" key="5">
-                <Form
-      name="kpi_list"
-      className="kpi_list"
-      initialValues={{ remember: true }}
-      onFinish={onFinish}
-    >
+                
                   <div>
                   
                     <div>
@@ -834,11 +930,16 @@ function Campaign(props: HomeProps) {
         <Form.Item name="trialCheck" valuePropName="checked" noStyle>
           <Checkbox>Trial</Checkbox>
         </Form.Item> */}
-                    
+                    <Form.Item 
+                        name="kpiListCheckBoxes"
+                        rules={[
+                          { required: true, message: "Please input KPI List!" },
+                        ]}>
                     <Checkbox.Group
                       options={kpiListData.options}
                       onChange={onCheckChange}
                     />
+                    </Form.Item>
                   </div>
                   <br></br>
                   <div className="site-card-wrapper">
@@ -869,7 +970,7 @@ function Campaign(props: HomeProps) {
                         </div>
                       </Col>
                       <Col span={6}>
-                      <Form.Item name="printBudget" valuePropName="visible">
+                      {/* <Form.Item name="printBudget" valuePropName="visible"> */}
                         <div>
                           <label>Print Budget In JPY</label>
                         </div>
@@ -880,12 +981,18 @@ function Campaign(props: HomeProps) {
                                 <label>Setup </label>
                               </div>
                               <div>
+                              <Form.Item 
+                        name="setupPrintBudget"
+                        rules={[
+                          { required: true, message: "Required" },
+                        ]}>
                                 <InputNumber
                                   min={0}
                                   max={10000}
                                   step={10}
                                   onChange={onChangeNumber}
                                 />
+                                </Form.Item>
                               </div>
                             </Col>
                             <Col span={8}>
@@ -893,18 +1000,24 @@ function Campaign(props: HomeProps) {
                                 <label>Sold </label>
                               </div>
                               <div>
+                              <Form.Item 
+                        name="soldPrintBudget"
+                        rules={[
+                          { required: true, message: "Required" },
+                        ]}>
                                 <InputNumber
                                   min={0}
                                   max={10000}
                                   step={10}
                                   onChange={onChangeNumber}
                                 />
+                                </Form.Item>
                               </div>
                             </Col>
                           </Row>
                         </div>
                         
-                        </Form.Item>
+                        {/* </Form.Item> */}
                         
                       </Col>
                       <Col span={6}>
@@ -918,12 +1031,18 @@ function Campaign(props: HomeProps) {
                                 <label>Setup </label>
                               </div>
                               <div>
+                              <Form.Item 
+                        name="setupRedemptionBudget"
+                        rules={[
+                          { required: true, message: "Required" },
+                        ]}>
                                 <InputNumber
                                   min={0}
                                   max={10000}
                                   step={10}
                                   onChange={onChangeNumber}
                                 />
+                                </Form.Item>
                               </div>
                             </Col>
                             <Col span={8}>
@@ -931,12 +1050,18 @@ function Campaign(props: HomeProps) {
                                 <label>Sold </label>
                               </div>
                               <div>
+                              <Form.Item 
+                        name="soldRedemptionBudget"
+                        rules={[
+                          { required: true, message: "Required" },
+                        ]}>
                                 <InputNumber
                                   min={0}
                                   max={10000}
                                   step={10}
                                   onChange={onChangeNumber}
                                 />
+                                </Form.Item>
                               </div>
                             </Col>
                           </Row>
@@ -956,12 +1081,18 @@ function Campaign(props: HomeProps) {
                                 <label>Setup </label>
                               </div>
                               <div>
+                              <Form.Item 
+                        name="setupTotalBudget"
+                        rules={[
+                          { required: true, message: "Required" },
+                        ]}>
                                 <InputNumber
                                   min={0}
                                   max={10000}
                                   step={10}
                                   onChange={onChangeNumber}
                                 />
+                                </Form.Item>
                               </div>
                             </Col>
                             <Col span={8}>
@@ -969,12 +1100,18 @@ function Campaign(props: HomeProps) {
                                 <label>Sold </label>
                               </div>
                               <div>
+                              <Form.Item 
+                        name="soldTotalBudget"
+                        rules={[
+                          { required: true, message: "Required" },
+                        ]}>
                                 <InputNumber
                                   min={0}
                                   max={10000}
                                   step={10}
                                   onChange={onChangeNumber}
                                 />
+                                </Form.Item>
                               </div>
                             </Col>
                           </Row>
@@ -991,12 +1128,18 @@ function Campaign(props: HomeProps) {
                                 <label>Setup </label>
                               </div>
                               <div>
+                              <Form.Item 
+                        name="setupRedemptionContributionPercent"
+                        rules={[
+                          { required: true, message: "Required" },
+                        ]}>
                                 <InputNumber
                                   min={0}
                                   max={100}
                                   step={1}
                                   onChange={onChangeNumber}
                                 />
+                                </Form.Item>
                               </div>
                             </Col>
                             <Col span={8}>
@@ -1004,12 +1147,18 @@ function Campaign(props: HomeProps) {
                                 <label>Sold </label>
                               </div>
                               <div>
+                              <Form.Item 
+                        name="soldRedemptionContributionPercent"
+                        rules={[
+                          { required: true, message: "Required" },
+                        ]}>
                                 <InputNumber
                                   min={0}
                                   max={100}
                                   step={1}
                                   onChange={onChangeNumber}
                                 />
+                                </Form.Item>
                               </div>
                             </Col>
                           </Row>
@@ -1026,12 +1175,18 @@ function Campaign(props: HomeProps) {
                                 <label>Setup </label>
                               </div>
                               <div>
+                              <Form.Item 
+                        name="setupTrialBudget"
+                        rules={[
+                          { required: true, message: "Required" },
+                        ]}>
                                 <InputNumber
                                   min={0}
                                   max={10000}
                                   step={10}
                                   onChange={onChangeNumber}
                                 />
+                                </Form.Item>
                               </div>
                             </Col>
                             <Col span={8}>
@@ -1039,12 +1194,18 @@ function Campaign(props: HomeProps) {
                                 <label>Sold </label>
                               </div>
                               <div>
+                              <Form.Item 
+                        name="soldTrialBudget"
+                        rules={[
+                          { required: true, message: "Required" },
+                        ]}>
                                 <InputNumber
                                   min={0}
                                   max={10000}
                                   step={10}
                                   onChange={onChangeNumber}
                                 />
+                                </Form.Item>
                               </div>
                             </Col>
                           </Row>
@@ -1062,13 +1223,16 @@ function Campaign(props: HomeProps) {
                             Previous
                           </Button> */}
 
-                          <Button
-                            type="primary"
-                            style={{ verticalAlign: "End", width: 80 }}
-                            onClick={showConfirm}
-                          >
-                            Approve
-                          </Button>
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                style={{ verticalAlign: "End", width: 80 }}
+                formNoValidate={true}
+              >
+                Approve
+              </Button>
+            </Form.Item>
                         </Space>
                         </Col>
                         </Row>
@@ -1076,10 +1240,10 @@ function Campaign(props: HomeProps) {
                       </Col>
                     </Row>
                   </div>
-                  </Form>
                 </Panel>
               </Collapse>
             </div>
+            </Form>
           </div>
         </Content>
         <FooterComponent/>
