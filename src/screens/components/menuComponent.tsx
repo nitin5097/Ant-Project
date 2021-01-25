@@ -18,7 +18,7 @@ function campaignReturn(key: any) {
 
 function homeReturn(key: any) {
   console.log(key);
-  window.location.href = "/";
+  window.location.href = "/dashboard";
 }
 
 function returnReports(key: any) {

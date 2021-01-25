@@ -15,11 +15,14 @@ function App() {
     <div className="App">
       <Switch>
         <Route exact path="/">
-          <CampaignStatus isLoggedIn={true} message={"Welcome"} name={"Admin"}/>
+        <Login/>
         </Route>
           <Route exact path="/home">
             <Home/>
           </Route>
+          <Route exact path="/dashboard">
+          <CampaignStatus isLoggedIn={true} message={"Welcome"} name={"Admin"}/>
+        </Route>
         <Route exact path="/reports">
           <Reports isLoggedIn={true} message={"Welcome"} name={"Admin"}/>
         </Route>
@@ -37,9 +40,6 @@ function App() {
         </Route>
         <Route path="/result">
             <ThankYouResult isLoggedIn={true} message={"Welcome"} name={"Admin"}/>
-        </Route>
-        <Route path="/login">
-            <Login/>
         </Route>
         <Route path="/signup">
             <Signup/>
