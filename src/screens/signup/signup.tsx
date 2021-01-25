@@ -128,7 +128,7 @@ function Signup() {
               >
                 Continue
               </Button>
-              <a href="/login">Already have an account?</a>
+              <a href="/">Already have an account?</a>
             </Form.Item>
           </Form>
         </Col>

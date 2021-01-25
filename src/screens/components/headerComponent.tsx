@@ -76,7 +76,7 @@ function HeaderComponent(props: HomeProps) {
                     <div>
                       {" "}
                       {props.message}, {props.name} <Space/> 
-                      <a href="/login">{<LogoutOutlined disabled style={{ fontSize: "20px" }} />}</a>
+                      <a href="/">{<LogoutOutlined disabled style={{ fontSize: "20px" }} />}</a>
                     </div>
                   </div>
                 )}

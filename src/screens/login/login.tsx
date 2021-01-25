@@ -13,7 +13,7 @@ const error = () => {
 const onFinish = (values: any) => {
   console.log("Received values of form: ", values);
   if((values.username==='Admin')&&(values.password==='Admin')){
-    window.location.href = "/";
+    window.location.href = "/dashboard";
   }
   else{
     message.error('Invalid credentials');
