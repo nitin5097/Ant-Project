@@ -192,8 +192,8 @@ function CampaignStatus(props: HomeProps) {
               style={{ padding: 24, minHeight: 660 }}
             >
               <div className="site-statistic-demo-card">
-                <Row gutter={16}>
-                  <Col span={12}>
+                <Row gutter={24}>
+                  <Col span={11}>
                     <Card>
                       <Statistic
                         title="Active Campaigns"
@@ -205,7 +205,7 @@ function CampaignStatus(props: HomeProps) {
                       />
                     </Card>
                   </Col>
-                  <Col span={12}>
+                  <Col span={11}>
                     <Card>
                       <Statistic
                         title="Scheduled Campaigns"
